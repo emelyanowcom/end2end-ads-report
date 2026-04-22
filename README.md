@@ -94,6 +94,8 @@ The `/keyword-report` skill (`.claude/commands/keyword-report.md`) guides you th
 3. Configuring credentials
 4. Running the report
 
+**Onboarding runs once.** After the first setup the skill writes `# SETUP: CRM=..., ANALYTICS=..., PUBLISH=...` as the first line of `.env`. On every subsequent run it detects this line and skips straight to credentials check → run. No repeated questions.
+
 ---
 
 <a name="ru"></a>
@@ -191,3 +193,5 @@ report.py                 — Рендерер Markdown-отчётов
 2. Поиск инструкций по подключению в официальной документации (с твоего разрешения)
 3. Настройку credentials
 4. Запуск отчёта
+
+**Онбординг проходит один раз.** После первой настройки скилл записывает строку `# SETUP: CRM=..., ANALYTICS=..., PUBLISH=...` в начало `.env`. При всех последующих запусках он видит эту строку и сразу переходит к проверке credentials → запуску. Повторных вопросов не будет.
