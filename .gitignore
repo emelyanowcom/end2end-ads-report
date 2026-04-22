@@ -1,0 +1,69 @@
+# Secrets & credentials
+.env
+*.json
+!package.json
+!package-lock.json
+
+# Lead data & company reports
+*.csv
+*.xlsx
+*.xls
+*.pptx
+Leads_*.xlsx
+*leads*.csv
+*leads*.md
+*report*.txt
+*analysis*.txt
+keyword_reports/
+weekly_reports/
+ads_analysis/
+site_files/
+
+# Unrelated sub-projects
+korea-guide/
+
+# JS presentation scripts & node deps (not part of this project)
+leads-presentation.js
+leads-presentation.pptx
+package.json
+package-lock.json
+
+# One-off analysis scripts with hardcoded local paths
+analyze_leads.py
+
+# Company-specific documents
+Typhoon_Roasters_Info.md
+NEW_WEBSITE_STRUCTURE_AND_COPY.md
+Zvonki-Podrobnyi-otchet-Rick.md
+typhoon_coffee_heroes_gpt_landing_review.md
+ai_seo_strategy_2026.md
+offers-presented-report.md
+decisions_log.md
+end2end*.md
+test_lead.md
+marketing_budget_april_2026.xlsx
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Claude local settings (may contain paths/tokens)
+.claude/settings.local.json
+.claude/launch.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
