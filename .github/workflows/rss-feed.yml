@@ -1,0 +1,48 @@
+name: Regenerate RSS feed
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        working-directory: scripts/rss-feed
+        run: npm install
+
+      - name: Generate feed.xml
+        working-directory: scripts/rss-feed
+        env:
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
+        run: npm run generate
+
+      - name: Publish to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/gh-pages-deploy origin/gh-pages
+          cp scripts/rss-feed/feed.xml /tmp/gh-pages-deploy/feed.xml
+          cd /tmp/gh-pages-deploy
+          if git diff --quiet; then
+            echo "No changes to feed.xml"
+          else
+            git add feed.xml
+            git commit -m "Auto-update RSS feed"
+            git push origin HEAD:gh-pages
+          fi
