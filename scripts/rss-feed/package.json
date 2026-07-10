@@ -6,6 +6,6 @@
     "generate": "node generate.mjs"
   },
   "dependencies": {
-    "framer-api": "^1.0.0"
+    "framer-api": "^0.1.22"
   }
 }

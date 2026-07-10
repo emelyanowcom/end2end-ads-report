@@ -44,7 +44,14 @@ async function main() {
     if (!API_KEY) throw new Error("Missing FRAMER_API_KEY env var")
 
     const framer = await connect(PROJECT_URL, API_KEY)
-    const items = await framer.getCollectionItems(ARTICLES_COLLECTION_ID)
+    let items
+    try {
+        const collection = await framer.getCollection(ARTICLES_COLLECTION_ID)
+        if (!collection) throw new Error(`Collection ${ARTICLES_COLLECTION_ID} not found`)
+        items = await collection.getItems()
+    } finally {
+        await framer.disconnect()
+    }
 
     const entries = items
         .filter((it) => !it.draft)
