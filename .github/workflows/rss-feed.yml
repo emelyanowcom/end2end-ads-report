@@ -1,4 +1,4 @@
-name: Regenerate RSS feed
+name: Regenerate RSS feed and blog sitemap
 
 on:
   schedule:
@@ -31,6 +31,17 @@ jobs:
           FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
         run: npm run generate
 
+      - name: Install sitemap-blog deps
+        working-directory: scripts/sitemap-blog
+        run: npm install
+
+      - name: Generate sitemap-blog.xml
+        working-directory: scripts/sitemap-blog
+        env:
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
+        run: npm run generate
+
       - name: Publish to gh-pages
         run: |
           git config user.name "github-actions[bot]"
@@ -38,11 +49,12 @@ jobs:
           git fetch origin gh-pages
           git worktree add /tmp/gh-pages-deploy origin/gh-pages
           cp scripts/rss-feed/feed.xml /tmp/gh-pages-deploy/feed.xml
+          cp scripts/sitemap-blog/sitemap-blog.xml /tmp/gh-pages-deploy/sitemap-blog.xml
           cd /tmp/gh-pages-deploy
           if git diff --quiet; then
-            echo "No changes to feed.xml"
+            echo "No changes to feed.xml or sitemap-blog.xml"
           else
-            git add feed.xml
-            git commit -m "Auto-update RSS feed"
+            git add feed.xml sitemap-blog.xml
+            git commit -m "Auto-update RSS feed and blog sitemap"
             git push origin HEAD:gh-pages
           fi

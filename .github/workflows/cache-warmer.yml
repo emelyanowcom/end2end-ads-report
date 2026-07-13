@@ -1,0 +1,15 @@
+name: Warm Framer SSR cache
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Warm all sitemap URLs
+        run: bash scripts/cache-warmer/warm.sh
