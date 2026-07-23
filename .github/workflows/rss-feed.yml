@@ -12,11 +12,11 @@ jobs:
   regenerate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
@@ -24,12 +24,20 @@ jobs:
         working-directory: scripts/rss-feed
         run: npm install
 
+      # Framer API периодически флейкает ("Some modules are missing",
+      # "auth redirect") — транзиентные ошибки, лечатся повтором.
       - name: Generate feed.xml
         working-directory: scripts/rss-feed
         env:
           FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
           FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
-        run: npm run generate
+        run: |
+          for attempt in 1 2 3; do
+            npm run generate && exit 0
+            echo "Attempt $attempt failed, retrying in 60s..."
+            sleep 60
+          done
+          exit 1
 
       - name: Install sitemap-blog deps
         working-directory: scripts/sitemap-blog
@@ -40,7 +48,13 @@ jobs:
         env:
           FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
           FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
-        run: npm run generate
+        run: |
+          for attempt in 1 2 3; do
+            npm run generate && exit 0
+            echo "Attempt $attempt failed, retrying in 60s..."
+            sleep 60
+          done
+          exit 1
 
       - name: Publish to gh-pages
         run: |
